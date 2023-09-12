@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+	"fmt"
 	"os"
 	"strings"
 
@@ -21,11 +22,14 @@ func init() {
 
 func QuerySmartContract(key string) string {
 	ethEndpoint := os.Getenv("ETH_ENDPOINT")
+	fmt.Println(ethEndpoint)
 	client, _ := ethclient.Dial(ethEndpoint)
 	defer client.Close()
 
 	contractAddress := common.HexToAddress(os.Getenv("CONTRACT_ADDRESS"))
+	fmt.Println(os.Getenv("CONTRACT_ADDRESS"))
 	contractABI, err := os.ReadFile(os.Getenv("ABI_PATHS"))
+	fmt.Println(os.Getenv("ABI_PATHS"))
 	U.CheckErr(err)
 
 	parsedABI, err := abi.JSON(strings.NewReader(string(contractABI)))

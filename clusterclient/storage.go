@@ -22,6 +22,7 @@ type FILE struct {
 	filename    string
 	clusterinfo string
 	dbname      string
+	dbdata      bson.M
 }
 
 // EXPOSE FUNCTION #3
@@ -41,6 +42,8 @@ func GetMongoClient(key string) (client *mongo.Client, ctx context.Context, canc
 func (f *FILE) HandleUploadRequest() {
 	if f.clusterinfo == "Mongo Storage" {
 		uploadforMongoStorage(f)
+	} else if f.clusterinfo == "Mongo Database" {
+		usingMongoDB(f)
 	} else {
 		// uploadforIPFSCluster(f)
 
@@ -80,6 +83,19 @@ func uploadforMongoStorage(f *FILE) {
 		_, err = collection.InsertOne(context.Background(), fileDoc)
 		U.CheckErr(err)
 	}
+}
+
+func usingMongoDB(f *FILE) {
+	client, ctx, cancel, err := GetMongoClient(f.clusterinfo)
+	U.CheckErr(err)
+
+	defer client.Disconnect(ctx)
+	defer cancel()
+
+	db := client.Database(f.dbname)
+
+	result, err := db.InsertOne(ctx, f.dbdata)
+	U.CheckErr(err)
 }
 
 func (f *FILE) HandleDownloadRequest() []byte {

@@ -18,10 +18,9 @@ func QuerySmartContract(key string) string {
 	defer client.Close()
 
 	contractAddress := common.HexToAddress("0x9F5844648746c6ae351F0E586fE435bA1E193199")
-	// 스마트 계약 ABI (Application Binary Interface)를 정의합니다.
+
 	contractABI := `[{"inputs":[{"internalType":"string","name":"key","type":"string"},{"internalType":"string","name":"value","type":"string"}],"name":"setConfigValue","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"stateMutability":"nonpayable","type":"constructor"},{"inputs":[{"internalType":"string","name":"key","type":"string"}],"name":"getConfigValue","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"view","type":"function"}]`
 
-	// ABI를 파싱합니다.
 	parsedABI, err := abi.JSON(strings.NewReader(contractABI))
 	U.CheckErr(err)
 

@@ -24,7 +24,7 @@ func CheckErr(err error) {
 	}
 }
 
-func ReadABIFile(path string) []byte {
+func ReadFile(path string) []byte {
 	data, err := abiJSON.ReadFile(path)
 	CheckErr(err)
 

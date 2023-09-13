@@ -1,11 +1,13 @@
 package utils
 
 import (
-	"os"
+	"embed"
 	"time"
 
 	log "github.com/sirupsen/logrus"
 )
+
+var abiJSON embed.FS
 
 func Log_init() {
 	log.SetLevel(log.InfoLevel)
@@ -22,9 +24,9 @@ func CheckErr(err error) {
 	}
 }
 
-func ReadFile(path string) []byte {
-	ReadInfo, err := os.ReadFile(path)
+func ReadABIFile(path string) []byte {
+	data, err := abiJSON.ReadFile(path)
 	CheckErr(err)
 
-	return ReadInfo
+	return data
 }

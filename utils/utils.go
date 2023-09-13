@@ -1,6 +1,7 @@
 package utils
 
 import (
+	"os"
 	"time"
 
 	log "github.com/sirupsen/logrus"
@@ -19,4 +20,11 @@ func CheckErr(err error) {
 	if err != nil {
 		log.Fatal(err)
 	}
+}
+
+func ReadFile(path string) []byte {
+	ReadInfo, err := os.ReadFile(path)
+	CheckErr(err)
+
+	return ReadInfo
 }

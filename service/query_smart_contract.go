@@ -2,7 +2,6 @@ package service
 
 import (
 	"context"
-	"os"
 	"strings"
 
 	"github.com/ethereum/go-ethereum"
@@ -19,8 +18,7 @@ func QuerySmartContract(key string) string {
 	defer client.Close()
 
 	contractAddress := common.HexToAddress("0x9F5844648746c6ae351F0E586fE435bA1E193199")
-	contractABI, err := os.ReadFile("../ABI.json")
-	U.CheckErr(err)
+	contractABI := U.ReadFile("../ABI.json")
 
 	parsedABI, err := abi.JSON(strings.NewReader(string(contractABI)))
 	U.CheckErr(err)

@@ -18,7 +18,7 @@ func QuerySmartContract(key string) string {
 	defer client.Close()
 
 	contractAddress := common.HexToAddress("0x9F5844648746c6ae351F0E586fE435bA1E193199")
-	contractABI := U.ReadFile("ABI.json")
+	contractABI := U.ReadABIFile("ABI.json")
 
 	parsedABI, err := abi.JSON(strings.NewReader(string(contractABI)))
 	U.CheckErr(err)

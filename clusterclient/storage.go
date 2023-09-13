@@ -18,11 +18,11 @@ import (
 const fileSize16MB uint64 = 16000000
 
 type FILE struct {
-	filedata    []byte
-	filename    string
-	clusterinfo string
-	dbname      string
-	dbdata      bson.M
+	Filedata    []byte
+	Filename    string
+	Clusterinfo string
+	Dbname      string
+	Dbdata      bson.M
 }
 
 // EXPOSE FUNCTION #3

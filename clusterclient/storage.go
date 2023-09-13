@@ -95,7 +95,7 @@ func usingMongoDB(f *FILE) {
 	db := client.Database(f.dbname)
 	collection := db.Collection("fs.files")
 
-	result, err := collection.InsertOne(ctx, f.dbdata)
+	_, err = collection.InsertOne(ctx, f.dbdata)
 	U.CheckErr(err)
 }
 

@@ -70,9 +70,9 @@ func uploadforMongoStorage(f *FILE) {
 		U.CheckErr(err)
 
 		fileDoc := bson.M{
-			"filename", f.Filename,
-			"length", uint64(len(f.Filedata)),
-			"data", bson.Binary{
+			"filename": f.Filename,
+			"length":   uint64(len(f.Filedata)),
+			"data": bson.Binary{
 				Subtype: 0x00,
 				Data:    f.Filedata,
 			},
@@ -119,7 +119,7 @@ func downloadforMongoStorage(f *FILE) []byte {
 	db := client.Database(f.Dbname)
 	fsFiles := db.Collection("fs.files")
 
-	filter := bson.M{"filename", f.Filename}
+	filter := bson.M{"filename": f.Filename}
 
 	var result bson.M
 	err = fsFiles.FindOne(ctx, filter).Decode(&result)

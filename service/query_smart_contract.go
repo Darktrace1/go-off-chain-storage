@@ -2,7 +2,6 @@ package service
 
 import (
 	"context"
-	"fmt"
 	"os"
 	"strings"
 
@@ -10,26 +9,17 @@ import (
 	"github.com/ethereum/go-ethereum/accounts/abi"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/ethclient"
-	"github.com/joho/godotenv"
 
 	U "github.com/off-chain-storage/go-off-chain-storage/utils"
 )
 
-func init() {
-	err := godotenv.Load(".env")
-	U.CheckErr(err)
-}
-
 func QuerySmartContract(key string) string {
-	ethEndpoint := os.Getenv("ETH_ENDPOINT")
-	fmt.Println(ethEndpoint)
+	ethEndpoint := "http://bum0448.iptime.org:8545"
 	client, _ := ethclient.Dial(ethEndpoint)
 	defer client.Close()
 
-	contractAddress := common.HexToAddress(os.Getenv("CONTRACT_ADDRESS"))
-	fmt.Println(os.Getenv("CONTRACT_ADDRESS"))
-	contractABI, err := os.ReadFile(os.Getenv("ABI_PATHS"))
-	fmt.Println(os.Getenv("ABI_PATHS"))
+	contractAddress := common.HexToAddress("0x9F5844648746c6ae351F0E586fE435bA1E193199")
+	contractABI, err := os.ReadFile("../ABI.json")
 	U.CheckErr(err)
 
 	parsedABI, err := abi.JSON(strings.NewReader(string(contractABI)))

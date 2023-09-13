@@ -72,7 +72,7 @@ func uploadforMongoStorage(f *FILE) {
 		fileDoc := bson.M{
 			"filename": f.Filename,
 			"length":   uint64(len(f.Filedata)),
-			"data": bson.Binary{
+			"data": primitive.Binary{
 				Subtype: 0x00,
 				Data:    f.Filedata,
 			},

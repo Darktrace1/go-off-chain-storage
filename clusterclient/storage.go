@@ -63,7 +63,7 @@ func uploadforMongoStorage(f *FILE) {
 		bucket, err := gridfs.NewBucket(db)
 		U.CheckErr(err)
 
-		objectID, err := bucket.UploadFromStream(f.filename, f.filedata)
+		_, err = bucket.UploadFromStream(f.filename, bytes.NewReader(f.filedata))
 		U.CheckErr(err)
 	} else {
 		collection := db.Collection("fs.files")
@@ -93,8 +93,9 @@ func usingMongoDB(f *FILE) {
 	defer cancel()
 
 	db := client.Database(f.dbname)
+	collection := db.Collection("fs.files")
 
-	result, err := db.InsertOne(ctx, f.dbdata)
+	result, err := collection.InsertOne(ctx, f.dbdata)
 	U.CheckErr(err)
 }
 
@@ -126,7 +127,7 @@ func downloadforMongoStorage(f *FILE) []byte {
 	err = fsFiles.FindOne(ctx, filter).Decode(&result)
 	U.CheckErr(err)
 
-	if result["length"].(int64) > fileSize16MB {
+	if result["length"].(uint64) > fileSize16MB {
 		return downloadLargeFile(f.filename, db)
 	} else {
 		return downloadSmallFile(result)
@@ -143,7 +144,7 @@ func downloadLargeFile(filename string, db *mongo.Database) []byte {
 	bucket, _ := gridfs.NewBucket(db)
 
 	var buf bytes.Buffer
-	dStream, err := bucket.DownloadToStreamByName(filename, &buf)
+	_, err := bucket.DownloadToStreamByName(filename, &buf)
 	U.CheckErr(err)
 
 	return buf.Bytes()

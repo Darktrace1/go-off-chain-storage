@@ -63,7 +63,7 @@ func uploadforMongoStorage(f *FILE) {
 		bucket, err := gridfs.NewBucket(db)
 		U.CheckErr(err)
 
-		_, err = bucket.UploadFromStream(f.filename, bytes.NewReader(f.Filedata))
+		_, err = bucket.UploadFromStream(f.Filename, bytes.NewReader(f.Filedata))
 		U.CheckErr(err)
 	} else {
 		collection := db.Collection("fs.files")
@@ -75,9 +75,9 @@ func uploadforMongoStorage(f *FILE) {
 		}
 
 		fileDoc := bson.D{
-			{"filename", f.filename},
-			{"length", uint64(len(f.Filedata))},
-			{"data", binData},
+			"filename", f.Filename,
+			"length", uint64(len(f.Filedata)),
+			"data", binData,
 		}
 
 		_, err = collection.InsertOne(context.Background(), fileDoc)
@@ -121,14 +121,14 @@ func downloadforMongoStorage(f *FILE) []byte {
 	db := client.Database(f.Dbname)
 	fsFiles := db.Collection("fs.files")
 
-	filter := bson.D{{"filename", f.filename}}
+	filter := bson.D{"filename", f.Filename}
 
 	var result bson.M
 	err = fsFiles.FindOne(ctx, filter).Decode(&result)
 	U.CheckErr(err)
 
 	if result["length"].(uint64) > fileSize16MB {
-		return downloadLargeFile(f.filename, db)
+		return downloadLargeFile(f.Filename, db)
 	} else {
 		return downloadSmallFile(result)
 	}

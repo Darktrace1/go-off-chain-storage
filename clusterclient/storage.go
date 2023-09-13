@@ -69,15 +69,13 @@ func uploadforMongoStorage(f *FILE) {
 		collection := db.Collection("fs.files")
 		U.CheckErr(err)
 
-		binData := primitive.Binary{
-			Subtype: 0x00,
-			Data:    f.Filedata,
-		}
-
 		fileDoc := bson.M{
 			"filename", f.Filename,
 			"length", uint64(len(f.Filedata)),
-			"data", binData,
+			"data", bson.Binary{
+				Subtype: 0x00,
+				Data:    f.Filedata,
+			},
 		}
 
 		_, err = collection.InsertOne(context.Background(), fileDoc)

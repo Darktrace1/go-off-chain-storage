@@ -40,9 +40,9 @@ func GetMongoClient(key string) (client *mongo.Client, ctx context.Context, canc
 }
 
 func (f *FILE) HandleUploadRequest() {
-	if f.clusterinfo == "Mongo Storage" {
+	if f.Clusterinfo == "Mongo Storage" {
 		uploadforMongoStorage(f)
-	} else if f.clusterinfo == "Mongo Database" {
+	} else if f.Clusterinfo == "Mongo Database" {
 		usingMongoDB(f)
 	} else {
 		// uploadforIPFSCluster(f)
@@ -51,19 +51,19 @@ func (f *FILE) HandleUploadRequest() {
 }
 
 func uploadforMongoStorage(f *FILE) {
-	client, ctx, cancel, err := GetMongoClient(f.clusterinfo)
+	client, ctx, cancel, err := GetMongoClient(f.Clusterinfo)
 	U.CheckErr(err)
 
 	defer client.Disconnect(ctx)
 	defer cancel()
 
-	db := client.Database(f.dbname)
+	db := client.Database(f.Dbname)
 
-	if uint64(len(f.filedata)) > fileSize16MB {
+	if uint64(len(f.Filedata)) > fileSize16MB {
 		bucket, err := gridfs.NewBucket(db)
 		U.CheckErr(err)
 
-		_, err = bucket.UploadFromStream(f.filename, bytes.NewReader(f.filedata))
+		_, err = bucket.UploadFromStream(f.filename, bytes.NewReader(f.Filedata))
 		U.CheckErr(err)
 	} else {
 		collection := db.Collection("fs.files")
@@ -71,12 +71,12 @@ func uploadforMongoStorage(f *FILE) {
 
 		binData := primitive.Binary{
 			Subtype: 0x00,
-			Data:    f.filedata,
+			Data:    f.Filedata,
 		}
 
 		fileDoc := bson.D{
 			{"filename", f.filename},
-			{"length", uint64(len(f.filedata))},
+			{"length", uint64(len(f.Filedata))},
 			{"data", binData},
 		}
 
@@ -86,39 +86,39 @@ func uploadforMongoStorage(f *FILE) {
 }
 
 func usingMongoDB(f *FILE) {
-	client, ctx, cancel, err := GetMongoClient(f.clusterinfo)
+	client, ctx, cancel, err := GetMongoClient(f.Clusterinfo)
 	U.CheckErr(err)
 
 	defer client.Disconnect(ctx)
 	defer cancel()
 
-	db := client.Database(f.dbname)
+	db := client.Database(f.Dbname)
 	collection := db.Collection("fs.files")
 
-	_, err = collection.InsertOne(ctx, f.dbdata)
+	_, err = collection.InsertOne(ctx, f.Dbdata)
 	U.CheckErr(err)
 }
 
 func (f *FILE) HandleDownloadRequest() []byte {
-	if f.clusterinfo == "Mongo Storage" {
+	if f.Clusterinfo == "Mongo Storage" {
 		return downloadforMongoStorage(f)
 	} else {
 		// return downloadforIPFSCluster(f)
 
 		// temp code
-		var fileData []byte
-		return fileData
+		var FileData []byte
+		return FileData
 	}
 }
 
 func downloadforMongoStorage(f *FILE) []byte {
-	client, ctx, cancel, err := GetMongoClient(f.clusterinfo)
+	client, ctx, cancel, err := GetMongoClient(f.Clusterinfo)
 	U.CheckErr(err)
 
 	defer client.Disconnect(ctx)
 	defer cancel()
 
-	db := client.Database(f.dbname)
+	db := client.Database(f.Dbname)
 	fsFiles := db.Collection("fs.files")
 
 	filter := bson.D{{"filename", f.filename}}

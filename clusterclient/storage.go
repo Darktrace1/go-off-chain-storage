@@ -33,6 +33,8 @@ func GetMongoClient() (client *mongo.Client, ctx context.Context, cancel context
 	// MongoDB_STORAGE
 	uri := S.QuerySmartContract("MongoDB")
 
+	fmt.Println(uri + "HLELLO")
+
 	opts := options.Client().ApplyURI(uri)
 
 	client, err := mongo.Connect(ctx, opts)

@@ -13,7 +13,7 @@ import (
 )
 
 func QuerySmartContract(key string) string {
-	ethEndpoint := "172.15.200.2:8545"
+	ethEndpoint := "http://172.15.200.2:8545"
 	client, _ := ethclient.Dial(ethEndpoint)
 	defer client.Close()
 

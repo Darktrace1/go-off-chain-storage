@@ -3,7 +3,6 @@ package clusterclient
 import (
 	"bytes"
 	"context"
-	"fmt"
 	"time"
 
 	"go.mongodb.org/mongo-driver/bson"
@@ -11,8 +10,6 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/gridfs"
 	"go.mongodb.org/mongo-driver/mongo/options"
-
-	log "github.com/sirupsen/logrus"
 
 	S "github.com/off-chain-storage/go-off-chain-storage/service"
 	U "github.com/off-chain-storage/go-off-chain-storage/utils"
@@ -32,21 +29,13 @@ type FILE struct {
 func GetMongoClient(key string) (client *mongo.Client, ctx context.Context, cancel context.CancelFunc, error error) {
 	ctx, cancel = context.WithTimeout(context.Background(), 3*time.Second)
 
-	log.Info("# 1")
-
 	// MongoDB_STORAGE
 	uri := S.QuerySmartContract(key)
 
-	log.Info("# 2")
-
 	opts := options.Client().ApplyURI(uri)
-
-	log.Info("# 3")
 
 	client, err := mongo.Connect(ctx, opts)
 	U.CheckErr(err)
-
-	log.Info("# 4")
 
 	return client, ctx, cancel, err
 }
@@ -55,9 +44,7 @@ func (f *FILE) HandleUploadRequest() {
 	if f.Clusterinfo == "Mongo Storage" {
 		uploadforMongoStorage(f)
 	} else if f.Clusterinfo == "MongoDB" {
-		log.Info("# 0")
 		usingMongoDB(f)
-		log.Info("# 5")
 	} else {
 		// uploadforIPFSCluster(f)
 
@@ -101,24 +88,14 @@ func usingMongoDB(f *FILE) {
 	client, ctx, cancel, err := GetMongoClient(f.Clusterinfo)
 	U.CheckErr(err)
 
-	log.Info("# 6")
-
 	defer client.Disconnect(ctx)
 	defer cancel()
-
-	log.Info("# 7")
 
 	db := client.Database(f.Dbname)
 	collection := db.Collection("fs.files")
 
-	log.Info("# 8")
-
-	result, err := collection.InsertOne(ctx, f.Dbdata)
+	_, err = collection.InsertOne(ctx, f.Dbdata)
 	U.CheckErr(err)
-
-	fmt.Println(result.InsertedID)
-
-	log.Info("# 9")
 }
 
 func (f *FILE) HandleDownloadRequest() []byte {

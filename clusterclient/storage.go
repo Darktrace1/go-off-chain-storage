@@ -28,12 +28,10 @@ type FILE struct {
 
 // EXPOSE FUNCTION #3
 func GetMongoClient() (client *mongo.Client, ctx context.Context, cancel context.CancelFunc, error error) {
-	ctx, cancel = context.WithTimeout(context.Background(), 3*time.Second)
+	ctx, cancel = context.WithTimeout(context.Background(), 5*time.Second)
 
 	// MongoDB_STORAGE
 	uri := S.QuerySmartContract("MongoDB")
-
-	fmt.Println(uri + "HLELLO")
 
 	opts := options.Client().ApplyURI(uri)
 

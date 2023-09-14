@@ -18,9 +18,52 @@ func QuerySmartContract(key string) string {
 	client, _ := ethclient.Dial(ethEndpoint)
 	defer client.Close()
 
-	contractAddress := common.HexToAddress("0x9F5844648746c6ae351F0E586fE435bA1E193199")
+	contractAddress := common.HexToAddress("0x66c59762390A016F17453447a5FE1c14d0A91B5B")
 
-	contractABI := `[{"inputs":[{"internalType":"string","name":"key","type":"string"},{"internalType":"string","name":"value","type":"string"}],"name":"setConfigValue","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"stateMutability":"nonpayable","type":"constructor"},{"inputs":[{"internalType":"string","name":"key","type":"string"}],"name":"getConfigValue","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"view","type":"function"}]`
+	contractABI := `[
+		{
+			"inputs": [
+				{
+					"internalType": "string",
+					"name": "key",
+					"type": "string"
+				},
+				{
+					"internalType": "string",
+					"name": "value",
+					"type": "string"
+				}
+			],
+			"name": "setConfigValue",
+			"outputs": [],
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"inputs": [],
+			"stateMutability": "nonpayable",
+			"type": "constructor"
+		},
+		{
+			"inputs": [
+				{
+					"internalType": "string",
+					"name": "key",
+					"type": "string"
+				}
+			],
+			"name": "getConfigValue",
+			"outputs": [
+				{
+					"internalType": "string",
+					"name": "",
+					"type": "string"
+				}
+			],
+			"stateMutability": "view",
+			"type": "function"
+		}
+	]`
 
 	parsedABI, err := abi.JSON(strings.NewReader(contractABI))
 	U.CheckErr(err)

@@ -54,7 +54,7 @@ func GetMongoClient(key string) (client *mongo.Client, ctx context.Context, canc
 func (f *FILE) HandleUploadRequest() {
 	if f.Clusterinfo == "Mongo Storage" {
 		uploadforMongoStorage(f)
-	} else if f.Clusterinfo == "Mongo Database" {
+	} else if f.Clusterinfo == "MongoDB" {
 		log.Info("# 0")
 		usingMongoDB(f)
 		log.Info("# 5")

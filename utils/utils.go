@@ -2,6 +2,7 @@ package utils
 
 import (
 	"embed"
+	"os"
 	"time"
 
 	log "github.com/sirupsen/logrus"
@@ -29,4 +30,11 @@ func ReadABIFile(path string) []byte {
 	CheckErr(err)
 
 	return data
+}
+
+func ReadJson(path string) []byte {
+	jsonData, err := os.ReadFile(path)
+	CheckErr(err)
+
+	return jsonData
 }

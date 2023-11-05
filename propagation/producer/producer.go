@@ -32,7 +32,8 @@ func SyncProducer(filedata []byte, pub *rsa.PublicKey) {
 	x := syncWriter(brokerList)
 
 	x.SendMessage(&sarama.ProducerMessage{
-		Topic: "off-chain",
-		Value: sarama.ByteEncoder(filedata),
+		Topic:     "off-chain",
+		Value:     sarama.ByteEncoder(filedata),
+		Partition: -1,
 	})
 }

@@ -22,7 +22,7 @@ func syncWriter(brokerList []string) sarama.SyncProducer {
 }
 
 // 실제 사용할 API (1. Sending Data, 2. Public Key)
-func SyncProducer(filedata []byte, pub *rsa.PublicKey) {
+func SyncProducer(filedata []byte, pub *rsa.PublicKey, partitionNum int32) {
 	brokerList := []string{
 		"localhost:9092",
 		"localhost:9093",
@@ -34,6 +34,6 @@ func SyncProducer(filedata []byte, pub *rsa.PublicKey) {
 	x.SendMessage(&sarama.ProducerMessage{
 		Topic:     "off-chain",
 		Value:     sarama.ByteEncoder(filedata),
-		Partition: -1,
+		Partition: partitionNum,
 	})
 }

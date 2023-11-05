@@ -1,12 +1,14 @@
 package producer
 
 import (
+	"crypto/rsa"
+
 	"github.com/IBM/sarama"
 
 	U "github.com/off-chain-storage/go-off-chain-storage/utils"
 )
 
-func SyncWriter(brokerList []string) sarama.SyncProducer {
+func syncWriter(brokerList []string) sarama.SyncProducer {
 	config := sarama.NewConfig()
 
 	config.Producer.Return.Successes = true
@@ -19,14 +21,15 @@ func SyncWriter(brokerList []string) sarama.SyncProducer {
 	return producer
 }
 
-func SyncProducer(filedata []byte) {
+// 실제 사용할 API (1. Sending Data, 2. Public Key)
+func SyncProducer(filedata []byte, pub *rsa.PublicKey) {
 	brokerList := []string{
 		"localhost:9092",
 		"localhost:9093",
 		"localhost:9094",
 	}
 
-	x := SyncWriter(brokerList)
+	x := syncWriter(brokerList)
 
 	x.SendMessage(&sarama.ProducerMessage{
 		Topic: "off-chain",

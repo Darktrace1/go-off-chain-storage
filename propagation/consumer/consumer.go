@@ -5,8 +5,8 @@ import (
 
 	redis "github.com/redis/go-redis/v9"
 
+	P "github.com/off-chain-storage/go-off-chain-storage/propagation"
 	U "github.com/off-chain-storage/go-off-chain-storage/utils"
-	P "github.com/off-chain-storage/go-off-chain-stroage/propagation"
 )
 
 func SyncConsumer() <-chan *redis.Message {

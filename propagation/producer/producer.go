@@ -1,39 +1,21 @@
-package producer
+package propagation
 
 import (
+	"context"
 	"crypto/rsa"
 
-	"github.com/IBM/sarama"
-
 	U "github.com/off-chain-storage/go-off-chain-storage/utils"
+	P "github.com/off-chain-storage/go-off-chain-stroage/propagation"
 )
-
-func syncWriter(brokerList []string) sarama.SyncProducer {
-	config := sarama.NewConfig()
-
-	config.Producer.Return.Successes = true
-	config.Producer.RequiredAcks = sarama.WaitForAll
-	config.Producer.Retry.Max = 10
-
-	producer, err := sarama.NewSyncProducer(brokerList, config)
-	U.CheckErr(err)
-
-	return producer
-}
 
 // 실제 사용할 API (1. Sending Data, 2. Public Key)
 func SyncProducer(filedata []byte, pub *rsa.PublicKey, partitionNum int32) {
-	brokerList := []string{
-		"localhost:9092",
-		"localhost:9093",
-		"localhost:9094",
-	}
+	ctx := context.Background()
 
-	x := syncWriter(brokerList)
+	// Get Redis Instance
+	redisDb := P.ConnectRedis()
 
-	x.SendMessage(&sarama.ProducerMessage{
-		Topic:     "off-chain",
-		Value:     sarama.ByteEncoder(filedata),
-		Partition: partitionNum,
-	})
+	var err error
+	err = redisDb.Publish(ctx, "mychannel1", filedata).Err()
+	U.CheckErr(err)
 }

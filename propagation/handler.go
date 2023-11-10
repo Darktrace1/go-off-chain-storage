@@ -14,7 +14,7 @@ type BlockData struct {
 
 func ConnectRedis() *redis.Client {
 	redisDb := redis.NewClient(&redis.Options{
-		Addr:         ":6379",
+		Addr:         "172.25.0.2:6379",
 		DialTimeout:  10 * time.Second,
 		ReadTimeout:  30 * time.Second,
 		WriteTimeout: 30 * time.Second,
